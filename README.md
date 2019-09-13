@@ -40,7 +40,7 @@ yarn add prepare-stack-trace
 ### Node
 
 ```js
-const ErrorStackParser = require('@ladjs/error-stack-parser');
+const ErrorStackParser = require('error-stack-parser');
 const prepareStackTrace = require('prepare-stack-trace');
 
 const err1 = new Error('Oops!');
@@ -54,10 +54,32 @@ console.log('err2', err2);
 ### VanillaJS
 
 ```html
-<script src="https://unpkg.com/@ladjs/error-stack-parser"></script>
+<script src="https://unpkg.com/stackframe"></script>
+<script src="https://unpkg.com/error-stack-parser"></script>
 <script src="https://unpkg.com/prepare-stack-trace"></script>
 <script type="text/javascript">
   (function() {
+    //
+    // The following override is required until this PR is merged
+    // <https://github.com/stacktracejs/stackframe/pull/23>
+    //
+    StackFrame.prototype.toString = function() {
+      var fileName = this.getFileName() || '';
+      var lineNumber = this.getLineNumber() || '';
+      var columnNumber = this.getColumnNumber() || '';
+      var functionName = this.getFunctionName() || '';
+      if (this.getIsEval()) {
+        if (fileName) {
+          return '[eval] (' + fileName + ':' + lineNumber + ':' + columnNumber + ')';
+        }
+        return '[eval]:' + lineNumber + ':' + columnNumber;
+      }
+      if (functionName) {
+        return functionName + ' (' + fileName + ':' + lineNumber + ':' + columnNumber + ')';
+      }
+      return fileName + ':' + lineNumber + ':' + columnNumber;
+    }
+
     var err1 = new Error('Oops!');
     var err2 = new Error('Error 1 will inherit this stack trace');
     err1.stack = prepareStackTrace(err1, ErrorStackParser.parse(err2));
