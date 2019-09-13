@@ -1,0 +1,143 @@
+{
+  "name": "prepare-stack-trace",
+  "description": "Error.prepareStackTrace ponyfill for Node. Made for Cabin.",
+  "version": "0.0.0",
+  "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
+  "ava": {
+    "failFast": true,
+    "verbose": true
+  },
+  "bugs": {
+    "url": "https://github.com/cabinjs/prepare-stack-trace/issues",
+    "email": "niftylettuce@gmail.com"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "contributors": [
+    "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-conventional": "^8.1.0",
+    "ava": "^2.3.0",
+    "babelify": "^10.0.0",
+    "browserify": "^16.5.0",
+    "codecov": "^3.5.0",
+    "cross-env": "^5.2.1",
+    "eslint": "^6.3.0",
+    "eslint-config-xo-lass": "^1.0.3",
+    "eslint-plugin-compat": "^3.3.0",
+    "eslint-plugin-node": "^10.0.0",
+    "fixpack": "^2.3.1",
+    "husky": "^3.0.5",
+    "lint-staged": "^9.2.5",
+    "nyc": "^14.1.1",
+    "remark-cli": "^7.0.0",
+    "remark-preset-github": "^0.0.16",
+    "rimraf": "^3.0.0",
+    "tinyify": "^2.5.1",
+    "xo": "^0.24.0"
+  },
+  "engines": {
+    "node": ">=6.4.0"
+  },
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "homepage": "https://github.com/cabinjs/prepare-stack-trace",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "jsdelivr": "dist/prepare-stack-trace.min.js",
+  "keywords": [
+    "auth",
+    "authentication",
+    "browser",
+    "connect",
+    "consistent",
+    "err",
+    "errors",
+    "express",
+    "headers",
+    "koa",
+    "lad",
+    "lass",
+    "logger",
+    "logging",
+    "node",
+    "normalized",
+    "object",
+    "parse",
+    "passport",
+    "properties",
+    "req",
+    "user"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "*.js": [
+      "xo --fix",
+      "git add"
+    ],
+    "*.md": [
+      "remark . -qfo",
+      "git add"
+    ],
+    "package.json": [
+      "fixpack",
+      "git add"
+    ]
+  },
+  "main": "lib/index.js",
+  "prettier": {
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "trailingComma": "none"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "preset-github"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cabinjs/prepare-stack-trace"
+  },
+  "scripts": {
+    "ava": "cross-env NODE_ENV=test ava",
+    "browserify": "browserify src/index.js -o dist/prepare-stack-trace.js -s prepareStackTrace -g [ babelify --configFile ./.dist.babelrc ]",
+    "build": "npm run build:clean && npm run build:lib && npm run build:dist",
+    "build:clean": "rimraf lib dist",
+    "build:dist": "npm run browserify && npm run minify",
+    "build:lib": "babel --config-file ./.lib.babelrc src --out-dir lib",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "lint": "xo && remark . -qfo && eslint -c .lib.eslintrc lib && eslint -c .dist.eslintrc dist",
+    "minify": "cross-env NODE_ENV=production browserify src/index.js -o dist/prepare-stack-trace.min.js -s prepareStackTrace -g [ babelify --configFile ./.dist.babelrc ] -p tinyify",
+    "nyc": "cross-env NODE_ENV=test nyc ava",
+    "test": "npm run build && npm run lint && npm run ava",
+    "test-coverage": "npm run build && npm run lint && npm run nyc"
+  },
+  "unpkg": "dist/prepare-stack-trace.min.js",
+  "xo": {
+    "prettier": true,
+    "space": true,
+    "extends": [
+      "xo-lass"
+    ],
+    "envs": [
+      "browser",
+      "node"
+    ]
+  }
+}
