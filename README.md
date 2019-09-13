@@ -40,8 +40,44 @@ yarn add prepare-stack-trace
 ### Node
 
 ```js
+const StackFrame = require('stackframe');
 const ErrorStackParser = require('error-stack-parser');
 const prepareStackTrace = require('prepare-stack-trace');
+
+//
+// The following override is required until this PR is merged
+// <https://github.com/stacktracejs/stackframe/pull/23>
+//
+StackFrame.prototype.toString = function() {
+  const fileName = this.getFileName() || '';
+  const lineNumber = this.getLineNumber() || '';
+  const columnNumber = this.getColumnNumber() || '';
+  const functionName = this.getFunctionName() || '';
+  if (this.getIsEval()) {
+    if (fileName) {
+      return (
+        '[eval] (' + fileName + ':' + lineNumber + ':' + columnNumber + ')'
+      );
+    }
+
+    return '[eval]:' + lineNumber + ':' + columnNumber;
+  }
+
+  if (functionName) {
+    return (
+      functionName +
+      ' (' +
+      fileName +
+      ':' +
+      lineNumber +
+      ':' +
+      columnNumber +
+      ')'
+    );
+  }
+
+  return fileName + ':' + lineNumber + ':' + columnNumber;
+};
 
 const err1 = new Error('Oops!');
 const err2 = new Error('Error 1 will inherit this stack trace');
