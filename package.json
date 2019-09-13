@@ -1,7 +1,7 @@
 {
   "name": "prepare-stack-trace",
   "description": "Error.prepareStackTrace ponyfill for Node. Made for Cabin.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
   "ava": {
     "failFast": true,
