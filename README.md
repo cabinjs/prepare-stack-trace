@@ -44,41 +44,6 @@ const StackFrame = require('stackframe');
 const ErrorStackParser = require('error-stack-parser');
 const prepareStackTrace = require('prepare-stack-trace');
 
-//
-// The following override is required until this PR is merged
-// <https://github.com/stacktracejs/stackframe/pull/23>
-//
-StackFrame.prototype.toString = function() {
-  const fileName = this.getFileName() || '';
-  const lineNumber = this.getLineNumber() || '';
-  const columnNumber = this.getColumnNumber() || '';
-  const functionName = this.getFunctionName() || '';
-  if (this.getIsEval()) {
-    if (fileName) {
-      return (
-        '[eval] (' + fileName + ':' + lineNumber + ':' + columnNumber + ')'
-      );
-    }
-
-    return '[eval]:' + lineNumber + ':' + columnNumber;
-  }
-
-  if (functionName) {
-    return (
-      functionName +
-      ' (' +
-      fileName +
-      ':' +
-      lineNumber +
-      ':' +
-      columnNumber +
-      ')'
-    );
-  }
-
-  return fileName + ':' + lineNumber + ':' + columnNumber;
-};
-
 const err1 = new Error('Oops!');
 const err2 = new Error('Error 1 will inherit this stack trace');
 err1.stack = prepareStackTrace(err1, ErrorStackParser.parse(err2));
@@ -95,27 +60,6 @@ console.log('err2', err2);
 <script src="https://unpkg.com/prepare-stack-trace"></script>
 <script type="text/javascript">
   (function() {
-    //
-    // The following override is required until this PR is merged
-    // <https://github.com/stacktracejs/stackframe/pull/23>
-    //
-    StackFrame.prototype.toString = function() {
-      var fileName = this.getFileName() || '';
-      var lineNumber = this.getLineNumber() || '';
-      var columnNumber = this.getColumnNumber() || '';
-      var functionName = this.getFunctionName() || '';
-      if (this.getIsEval()) {
-        if (fileName) {
-          return '[eval] (' + fileName + ':' + lineNumber + ':' + columnNumber + ')';
-        }
-        return '[eval]:' + lineNumber + ':' + columnNumber;
-      }
-      if (functionName) {
-        return functionName + ' (' + fileName + ':' + lineNumber + ':' + columnNumber + ')';
-      }
-      return fileName + ':' + lineNumber + ':' + columnNumber;
-    }
-
     var err1 = new Error('Oops!');
     var err2 = new Error('Error 1 will inherit this stack trace');
     err1.stack = prepareStackTrace(err1, ErrorStackParser.parse(err2));
